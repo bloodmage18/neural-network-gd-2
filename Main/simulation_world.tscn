@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://h8820b6opkga"]
+[gd_scene load_steps=7 format=3 uid="uid://h8820b6opkga"]
 
 [ext_resource type="TileSet" uid="uid://jtolne00dcgy" path="res://Resource/sprout_grass.tres" id="1_w0dqc"]
 [ext_resource type="PackedScene" uid="uid://do4asf27vc5bp" path="res://Scenes/creature.tscn" id="3_quo0x"]
+[ext_resource type="Script" path="res://Scripts/FoodSpawner.gd" id="3_y8upn"]
 [ext_resource type="PackedScene" uid="uid://bkewqyfqpcxfp" path="res://Scenes/food_spawner.tscn" id="5_1icib"]
 [ext_resource type="Script" path="res://Scripts/SimulationCamera.gd" id="5_imnic"]
 
@@ -36,10 +37,11 @@ script = ExtResource("5_imnic")
 [node name="Creatures" type="Node" parent="."]
 
 [node name="CreatureSpawner" type="Marker2D" parent="Creatures"]
-position = Vector2(381, 347)
-
-[node name="creature" parent="Creatures" instance=ExtResource("3_quo0x")]
-position = Vector2(528, 390)
+position = Vector2(573, 377)
+script = ExtResource("3_y8upn")
+food_scene = ExtResource("3_quo0x")
+max_food_count = 5
+enabled = true
 
 [node name="Food" type="Node" parent="."]
 
