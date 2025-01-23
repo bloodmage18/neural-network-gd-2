@@ -1,6 +1,6 @@
 extends Marker2D
 
-@export var food_scene: PackedScene = preload("res://Scenes/Food.tscn")  # The food scene
+@export var food_scene: PackedScene = preload("res://Scenes/food.tscn")  # The food scene
 @export var spawn_area_size: Vector2 = Vector2(500, 500)  # Spawning area dimensions
 @export var max_food_count: int = 10  # Maximum food items in the scene
 @export var spawn_interval: float = 5.0  # Time between spawns

@@ -16,17 +16,17 @@ class Layer:
 		for i in range(n_nodes):
 			weights_array[i] = []
 			for j in range(n_inputs):
-				weights_array[i].append(randf_range(-1.0, 1.0)) # Initialize weights
+				weights_array[i].append(randf_range(-1.0, 1.0))
 
 		biases_array.resize(n_nodes)
 		for i in range(n_nodes):
-			biases_array[i] = randf_range(-1.0, 1.0) # Initialize biases
+			biases_array[i] = randf_range(-1.0, 1.0)
 
 		node_array.resize(n_nodes)
 
 	func forward(inputs_array: Array):
-		node_array.fill(0.0) # Reset node values
-
+		node_array.fill(0.0)
+		#print(inputs_array.size()) #debugging
 		for i in range(n_nodes):
 			for j in range(n_inputs):
 				node_array[i] += weights_array[i][j] * inputs_array[j]
@@ -34,7 +34,13 @@ class Layer:
 
 	func activation():
 		for i in range(n_nodes):
-			node_array[i] = max(0.0, node_array[i]) # ReLU activation
+			node_array[i] = max(0.0, node_array[i])
+
+	func copy():
+		var new_layer = Layer.new(n_inputs, n_nodes)
+		new_layer.weights_array = weights_array.duplicate(true)
+		new_layer.biases_array = biases_array.duplicate(true)
+		return new_layer
 
 class NN:
 	var layers: Array
@@ -59,10 +65,19 @@ class NN:
 
 		return layers[layers.size() - 1].node_array
 
+	func mutate_network(mutation_amount: float, mutation_chance: float):
+		for layer in layers:
+			for i in range(layer.weights_array.size()):
+				for j in range(layer.weights_array[i].size()):
+					if randf() < mutation_chance:
+						layer.weights_array[i][j] += randf_range(-mutation_amount, mutation_amount)
 
-# Example Usage (in a Node's script):
-func _ready():
-	var nn = NN.new([2, 4, 4, 2]) # Example network shape
-	var inputs = [0.5, 0.8]
-	var output = nn.brain(inputs)
-	print(output)
+			for i in range(layer.biases_array.size()):
+				if randf() < mutation_chance:
+					layer.biases_array[i] += randf_range(-mutation_amount, mutation_amount)
+
+	func copy_layers() -> Array:
+		var new_layers = []
+		for layer in layers:
+			new_layers.append(layer.copy())
+		return new_layers

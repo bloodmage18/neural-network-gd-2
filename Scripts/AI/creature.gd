@@ -2,7 +2,7 @@ extends CharacterBody2D
 
 @export var neural_network_script: SimpleNeuralNetwork #Script
 @export var movement_script: creature_movement #Script
-@export var agent_prefab: PackedScene
+@export var agent_prefab: PackedScene = preload("res://Scenes/creature.tscn")
 @export var view_distance: float = 20.0
 @export var size: float = 1.0
 @export var energy: float = 20.0
@@ -26,11 +26,12 @@ var is_dead: bool = false
 func _ready():
 	neural_network_script = SimpleNeuralNetwork.new()
 	movement_script = creature_movement.new()
-	nn = neural_network_script.NN.new([6, 8, 8, 2]) # Example network shape (adjust as needed)
+	nn = neural_network_script.NN.new([5, 8, 8, 2]) # Example network shape (adjust as needed)
 	movement = movement_script#.new()
 	add_child(movement) #add movement script as child
 	distances.resize(num_raycasts)
 	scale = Vector2(size, size)
+	$Area2D.connect("area_entered" , _on_area_entered)
 
 func _physics_process(delta):
 	if not is_mutated:
@@ -58,13 +59,13 @@ func _physics_process(delta):
 			if result.collider.is_in_group("food"):
 				distances[i] = result.distance / view_distance
 				# Debug draw ray (optional)
-				draw_line(ray_start, ray_start + ray_direction * result.distance, Color.RED, 2)
+				#draw_line(ray_start, ray_start + ray_direction * result.distance, Color.RED, 2)
 			else:
 				distances[i] = 1.0
-				draw_line(ray_start, ray_start + ray_direction * view_distance, Color.BLUE, 2)
+				#draw_line(ray_start, ray_start + ray_direction * view_distance, Color.BLUE, 2)
 		else:
 			distances[i] = 1.0
-			draw_line(ray_start, ray_start + ray_direction * view_distance, Color.GREEN, 2)
+			#draw_line(ray_start, ray_start + ray_direction * view_distance, Color.GREEN, 2)
 
 	var inputs_to_nn = distances
 	var outputs_from_nn = nn.brain(inputs_to_nn)
@@ -75,8 +76,9 @@ func _physics_process(delta):
 	movement.move(fb, lr)
 
 func _on_area_entered(area):
-	if area.is_in_group("food"):
+	if area.is_in_group("Food"):
 		energy += energy_gained
+		area._consume()
 		reproduction_energy += reproduction_energy_gained
 		area.queue_free() # Destroy the food
 

@@ -163,6 +163,7 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_f8ipc"]
+radius = 12.0416
 
 [node name="creature" type="CharacterBody2D"]
 texture_filter = 1
